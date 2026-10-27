@@ -11,9 +11,12 @@ const Game = {
     this.ctx = this.canvas.getContext('2d');
     this.ctx.imageSmoothingEnabled = false;
     Input.init(this.canvas);
+    TouchControls.init(this.canvas);
     UI.init();
     Save.load();
     window.addEventListener('resize', () => this.resize());
+    window.addEventListener('orientationchange', () => setTimeout(() => this.resize(), 200));
+    if (window.visualViewport) window.visualViewport.addEventListener('resize', () => this.resize());
     this.resize();
     this.toTitle();
     requestAnimationFrame((t) => this.loop(t));

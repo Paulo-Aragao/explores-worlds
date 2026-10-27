@@ -41,6 +41,15 @@ e acesse http://localhost:8137. Use `?dev` na URL para carregar as ferramentas d
 | Enter | Chamar a próxima onda (dá bônus de sucata) |
 | Esc / P | Pausa · M: som |
 
+### Celular / tablet
+
+Jogue com o aparelho na horizontal (o jogo tenta entrar em tela cheia no primeiro toque).
+
+- **Lado esquerdo da tela**: arraste para mover (puxe para baixo para descer de um Teto)
+- **Lado direito da tela**: arraste para mirar; segurar atira
+- Botões: **PULAR** (segure para o jetpack), **ESQUIVA**, **ARMA**, **USAR**, **REPARAR**, **GRANADA**, **CURA**, **KIT REP.**, **ONDA ▶** e **II** (pausa)
+- **CONSTRUIR**: escolha a peça na barra e arraste e solte no mapa; **DESMONTAR** remove a construção sob o dedo
+
 ## Estrutura
 
 - `js/core.js`: constantes, matemática, input e fonte bitmap

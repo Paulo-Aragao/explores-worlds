@@ -227,7 +227,7 @@ class Mission {
 
   setPhase(p) {
     this.phase = p; this.phaseT = 0;
-    const startKey = Input.usingGamepad ? 'TOUCHPAD ou D-PAD CIMA' : 'ENTER';
+    const startKey = Input.usingGamepad ? 'TOUCHPAD ou D-PAD CIMA' : Input.usingTouch ? 'ONDA ▶' : 'ENTER';
     switch (p) {
       case 'prep':
         this.prepTime = (this.tutorial ? 60 : 30) + 15 * Save.lvl('logistics');
@@ -362,7 +362,13 @@ class Mission {
   advanceTut() {
     this.tutStep++; this.tutT = 0;
     const pad = Input.usingGamepad;
-    const steps = pad ? [
+    const steps = !pad && Input.usingTouch ? [
+      'Arraste o dedo no <b>lado esquerdo</b> para mover. <b>PULAR</b> (segure para o jetpack) e <b>ESQUIVA</b> ficam à direita.',
+      'Arraste no <b>lado direito</b> para mirar — segurar <b>atira</b>. <b>ARMA</b> troca de arma.',
+      'Toque em <b>CONSTRUIR</b>, escolha a peça na barra e <b>arraste e solte</b> no mapa para posicionar. Proteja a <b>BROCA</b>!',
+      'Segure <b>USAR</b> perto de veios para extrair. Segure <b>REPARAR</b> perto de construções.',
+      'Quando estiver pronto, toque em <b>ONDA ▶</b> para chamar a primeira onda. Boa sorte!',
+    ] : pad ? [
       'Mova com <b>Analógico Esquerdo</b>, pule com <b>✕</b> e esquive com <b>○ ou L3</b>.',
       'Mire com o <b>Analógico Direito</b> e atire com <b>R2</b>. Troque de arma com <b>△ ou R1</b>.',
       'Pressione <b>R3 ou Touchpad</b> para construir. Escolha com <b>L1/R1</b> e aperte <b>R2</b> para posicionar.',
@@ -536,8 +542,8 @@ class Mission {
   updateInteractions(dt) {
     const p = this.player, I = Input;
     this.prompt = null;
-    const ePrompt = I.usingGamepad ? '[' + I.btn('interact') + ']' : '[E]';
-    const rPrompt = I.usingGamepad ? '[' + I.btn('repair') + ']' : '[R]';
+    const ePrompt = I.usingGamepad || I.usingTouch ? '[' + I.btn('interact') + ']' : '[E]';
+    const rPrompt = I.usingGamepad || I.usingTouch ? '[' + I.btn('repair') + ']' : '[R]';
     // depósitos
     let dep = null;
     for (const d of this.deposits) if (!d.done && Math.abs(d.x - p.cx) < 18 && p.onGround) dep = d;
@@ -762,7 +768,7 @@ class Mission {
     if (hb) {
       const k = hb.hp / hb.maxHp;
       const refund = Object.entries(hb.spent).map(([res, v]) => Math.floor(v * this.refundRate * k) + ' ' + RES[res].name).join(' ');
-      const tip = Input.usingGamepad ? '[' + Input.btn('dismantle') + '] DESMONTAR (' + refund + ')' : 'BOTAO DIREITO: DESMONTAR (' + refund + ')';
+      const tip = Input.usingGamepad ? '[' + Input.btn('dismantle') + '] DESMONTAR (' + refund + ')' : Input.usingTouch ? 'DESMONTAR (' + refund + ')' : 'BOTAO DIREITO: DESMONTAR (' + refund + ')';
       drawText(ctx, tip, W / 2, H - 70, '#ffcf5a', 1, 'center');
     }
   }

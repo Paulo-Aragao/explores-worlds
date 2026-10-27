@@ -77,6 +77,7 @@ const Input = {
   canvas: null,
   gamepad: null,
   usingGamepad: false,
+  usingTouch: false,
   isPlayStation: true, // Padrão otimizado para o usuário com DualSense
   gamepadName: 'DualSense (PS5)',
   pad: null,
@@ -102,6 +103,9 @@ const Input = {
       this.released[e.code] = true;
     });
     window.addEventListener('mousemove', (e) => {
+      // eventos de mouse sintetizados logo após um toque não contam como mouse real
+      if (typeof TouchControls !== 'undefined' && performance.now() - TouchControls.lastTouchT < 1000) return;
+      this.usingTouch = false;
       if (Math.hypot(e.clientX - this.lastPhysicalMouse.x, e.clientY - this.lastPhysicalMouse.y) > 4) {
         this.usingGamepad = false;
         this.lastPhysicalMouse.x = e.clientX;
@@ -364,6 +368,14 @@ const Input = {
   },
 
   btn(action) {
+    if (this.usingTouch && !this.usingGamepad) {
+      const touchMap = {
+        jump: 'PULAR', dash: 'ESQUIVA', shoot: 'Mira', aim: 'Mira', nextWeapon: 'ARMA',
+        interact: 'USAR', repair: 'REPARAR', build: 'CONSTRUIR', dismantle: 'DESMONTAR',
+        grenade: 'GRANADA', medkit: 'CURA', repairkit: 'KIT REP.', wave: 'ONDA', pause: 'II',
+      };
+      return touchMap[action] || action;
+    }
     if (!this.usingGamepad) {
       const kbMap = {
         jump: 'W / Espaço',
@@ -408,6 +420,7 @@ const Input = {
     // 1. Reconstruir estado de teclas limpo do teclado
     this.down = Object.assign({}, this.kbDown);
     this.pressed = Object.assign({}, this.kbPressed);
+    if (typeof TouchControls !== 'undefined') TouchControls.update(dt);
 
     // 2. Leitura de Gamepad
     const gps = navigator.getGamepads ? navigator.getGamepads() : [];

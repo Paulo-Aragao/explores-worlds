@@ -486,7 +486,7 @@ const UI = {
         <div class="bhint"></div>
       </div>`;
     h.querySelectorAll('.slot').forEach(s => {
-      s.onmousedown = (e) => {
+      s.onpointerdown = (e) => {
         e.stopPropagation();
         const t = s.dataset.b;
         if (!m.unlocked(t)) { Sound.play('error'); this.toast('Projeto bloqueado — fabrique no Fabricador', 1.4, 'danger'); return; }
@@ -525,14 +525,14 @@ const UI = {
     this._set('wname', E.wName, 'text', WEAPONS[w].name + (p.weapons.length > 1 ? `  [${p.wi + 1}/${p.weapons.length}]` : ''));
     this._set('heat', E.heatI, 'width', p.heat[w].toFixed(0) + '%');
     this._set('heatc', E.heat, 'class', 'bar heat' + (p.over[w] ? ' over' : ''));
-    const pad = Input.usingGamepad;
+    const pad = Input.usingGamepad, touch = Input.usingTouch && !pad;
     const gKey = pad ? 'D▲' : 'G';
     const hKey = pad ? 'D◀' : 'H';
     const fKey = pad ? 'D▶' : 'F';
     this._set('items', E.items, 'html', `<span>${gKey} <b>${sd.items.grenade}</b></span><span>${hKey} <b>${sd.items.medkit}</b></span><span>${fKey} <b>${sd.items.repairkit}</b></span>${m.orbLvl ? `<span class="orb ${m.orbT <= 0.5 ? 'ready' : ''}">☄ <b>${Math.max(0, Math.ceil(m.orbT))}s</b></span>` : ''}<span class="sc">${costHtml({ sucata: sd.inv.sucata, ferro: sd.inv.ferro }, false)}</span>`);
 
     // fase
-    const callWaveKey = pad ? 'Touchpad/D▲' : 'ENTER';
+    const callWaveKey = pad ? 'Touchpad/D▲' : touch ? 'ONDA ▶' : 'ENTER';
     let ph = '', sub = '';
     switch (m.phase) {
       case 'landing': ph = 'POUSANDO'; sub = m.world.name; break;
@@ -578,9 +578,11 @@ const UI = {
     });
     const defaultHint = pad
       ? 'R3 / Touchpad: construir · ▢: interagir · L2: reparar'
+      : touch ? 'Esquerda: mover · Direita: mirar e atirar'
       : 'B: construir · E: interagir · R: reparar';
     const buildHint = pad
       ? `<b>${BUILDINGS[m.buildSel].name}</b> — L1/R1: selecionar · R2: construir · ○: desmontar`
+      : touch ? `<b>${BUILDINGS[m.buildSel].name}</b> — arraste e solte para construir`
       : `<b>${BUILDINGS[m.buildSel].name}</b> — ${BUILDINGS[m.buildSel].desc}`;
     this._set('bhint', E.bhint, 'html', m.buildMode ? buildHint : defaultHint);
   },
